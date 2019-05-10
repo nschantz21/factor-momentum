@@ -1,8 +1,5 @@
-import numpy as np
-from scipy.stats.mstats import winsorize
 from typing import List
 Vector = List[float]
-
 
 
 def sigma(factor_returns: Vector, j: int) -> float:
@@ -28,8 +25,24 @@ def sigma(factor_returns: Vector, j: int) -> float:
 
 
 def scaling_factor(factor_returns: Vector, j: int) -> float:
+    """
+    Scaling Factor
+
+    Parameters
+    ----------
+    factor_returns : array-like
+        Monthly returns of factor
+    j : int
+        formation window in months
+
+    Returns
+    -------
+    scaling factor : float
+        Winsorized z-score, indicating the strength of the positive or
+        negative signal.
+    """
     ann_vol = 1.0 / sigma(factor_returns, j)
-    vol_scaled = ann_vol * factor_returns[-j:].sum()
+    vol_scaled = ann_vol * ((factor_returns[-j:] + 1.0).cumprod()[-1] - 1.0)
     return vol_scaled.clip(-2.0, 2.0)
 
 
@@ -39,6 +52,7 @@ def scaled_factor_return(factor_returns: Vector, j: int) -> float:
 
     Scales the one month returns
     according to the performance over the past j months.
+    Determined by scaling factor.
 
     Parameters
     ----------
@@ -54,4 +68,11 @@ def scaled_factor_return(factor_returns: Vector, j: int) -> float:
     scaled_return = factor_returns[-1] * s
     return scaled_return
 
+def long_portfolio():
+    pass
 
+def short_portfolio():
+    pass
+
+def long_short_portfolio():
+    pass
